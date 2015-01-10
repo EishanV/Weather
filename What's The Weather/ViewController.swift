@@ -16,6 +16,8 @@ class ViewController: UIViewController {
     
     @IBAction func buttonPressed(sender: AnyObject) {
         
+        self.view.endEditing(true)
+        
         var urlString = "http://www.weather-forecast.com/locations/" + city.text.stringByReplacingOccurrencesOfString(" ", withString: "") + "/forecasts/latest"
         
         var url = NSURL(string: urlString)
@@ -26,8 +28,11 @@ class ViewController: UIViewController {
             var contentArray = pageSource?.componentsSeparatedByString("<span class=\"phrase\">")
             
             var newContentArray = contentArray![1].componentsSeparatedByString("</span")
+            
+            
             dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                self.message.text = (newContentArray[0]) as? String
+                
+                self.message.text = (newContentArray[0]).stringByReplacingOccurrencesOfString("&deg;", withString: "°") as String
             })
             
             println(self.message.text)
