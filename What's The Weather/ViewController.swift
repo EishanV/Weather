@@ -12,6 +12,7 @@ class ViewController: UIViewController {
 
     @IBOutlet weak var city: UITextField!
     
+    @IBOutlet weak var message: UILabel!
     
     @IBAction func buttonPressed(sender: AnyObject) {
         
@@ -20,7 +21,16 @@ class ViewController: UIViewController {
         var url = NSURL(string: urlString)
         let task = NSURLSession.sharedSession().dataTaskWithURL(url!) {(data,response,error) in
             
-            println(NSString(data: data, encoding: NSUTF8StringEncoding))
+            var pageSource = NSString(data: data, encoding: NSUTF8StringEncoding)
+            
+            var contentArray = pageSource?.componentsSeparatedByString("<span class=\"phrase\">")
+            
+            var newContentArray = contentArray![1].componentsSeparatedByString("</span")
+            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                self.message.text = (newContentArray[0]) as? String
+            })
+            
+            println(self.message.text)
         }
         
         task.resume()
@@ -29,7 +39,7 @@ class ViewController: UIViewController {
     }
     
     
-    @IBOutlet weak var message: UILabel!
+    
     
     
     override func viewDidLoad() {
